@@ -1,0 +1,20 @@
+{
+    "fileName": "robotlib871.json",
+    "name": "Robotechs_robotlib",
+    "version": "2022.0.1",
+    "uuid": "cb311d09-36e9-4143-a032-55bb2b94443c",
+    "mavenUrls": [
+        "https://repo1.maven.org/maven2/",
+        "C\\Users\\Public\\wpilib\\2022\\maven"
+    ],
+    "jsonUrl": "https://www.westisliprobotics.com/dist/frc/2022/robotlib871.json",
+    "javaDependencies": [
+        {
+            "groupId": "com.team871",
+            "artifactId": "robotlib-java",
+            "version": "2022.0.1"
+        }
+    ],
+    "jniDependencies": [],
+    "cppDependencies": []
+}
