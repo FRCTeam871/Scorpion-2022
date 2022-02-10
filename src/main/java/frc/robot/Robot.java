@@ -110,11 +110,11 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopPeriodic() {
         //config.update(xbox);
-        drive.driveMecanum(xbox.getDriveX(), xbox.getDriveY(), xbox.getDriveZ());
+//        drive.driveMecanum(xbox.getDriveX(), xbox.getDriveY(), xbox.getDriveZ());
         shooter.fireUpdate(xbox.getFireButton());
         //shooter.setRMP(0);
-        collector.activateCollector(xbox.getCollectorAxis());
-        collector.invertCollector(xbox.getRegurgitateButton());
+//        collector.activateCollector(xbox.getCollectorAxis());
+//        collector.invertCollector(xbox.getRegurgitateButton());
     }
     
     

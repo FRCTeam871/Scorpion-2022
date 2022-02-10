@@ -83,4 +83,9 @@ public class StupidRobot implements IRobot{
     public Encoder getShooterEncoder() {
         return null;
     }
+
+    @Override
+    public double getValueThing() {
+        return 0;
+    }
 }

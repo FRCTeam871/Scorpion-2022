@@ -8,9 +8,9 @@ import com.revrobotics.CANSparkMaxLowLevel;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class RobotConfig implements IRobot{
     private CANSparkMax frontLeft;
@@ -27,6 +27,8 @@ public class RobotConfig implements IRobot{
     private Encoder encoder;
 
     public RobotConfig() {
+        SmartDashboard.putNumber("ThrowerPct", 5);
+
         /**
          * sets front left motor to CanSparkMax motor controller with device id 1
          */
@@ -146,5 +148,10 @@ public class RobotConfig implements IRobot{
     @Override
     public Encoder getShooterEncoder() {
         return encoder;
+    }
+
+    @Override
+    public double getValueThing() {
+        return SmartDashboard.getNumber("ThrowerPct", 0);
     }
 }

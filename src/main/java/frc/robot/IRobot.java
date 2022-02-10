@@ -69,4 +69,6 @@ public interface IRobot {
      * @return the encoder of the shooter
      */
     Encoder getShooterEncoder();
+
+    double getValueThing();
 }
