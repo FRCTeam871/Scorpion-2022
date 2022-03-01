@@ -58,11 +58,17 @@ public interface IController {
      * @return The fire button
      */
     HIDButton getFireButton();
+
     /**
      * The axis which controls the speed the cargo collector spins
+     *
      * @return The collector axis
      */
     HIDAxis getCollectorAxis();
 
     HIDButton getRegurgitateButton();
+
+    HIDButton getClimbButton();
+
+    HIDButton emergencyStopClimb();
 }

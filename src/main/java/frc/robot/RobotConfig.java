@@ -1,15 +1,19 @@
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
+import com.team871.io.sensor.DigitalLimitSwitch;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class RobotConfig implements IRobot{
@@ -19,12 +23,22 @@ public class RobotConfig implements IRobot{
     private CANSparkMax rearRight;
     private MotorController shooterMotor;
     private MotorController collectorMotor;
-    private DoubleSolenoid kickPiston;
     private DigitalInput ballSensor1;
     private DigitalInput ballSensor2;
     private MotorController gateKeepMotor;
     private Gyro gyro;
     private Encoder encoder;
+    private MotorController leftGrabArm;
+    private MotorController rightGrabArm;
+    private MotorController swingArmRight;
+    private MotorController swingArmLeft;
+    private DigitalLimitSwitch grabHookLimitSwitch;
+    private DigitalLimitSwitch swingHookLimitSwitch;
+    private DigitalLimitSwitch fullExtendLimitSwitch;
+    private DigitalLimitSwitch fullRetractLimitSwitch;
+    private DigitalLimitSwitch swingForwardLimitSwitch;
+    private DigitalLimitSwitch swingBackLimitSwitch;
+
 
     public RobotConfig() {
         SmartDashboard.putNumber("ThrowerPct", 5);
@@ -61,13 +75,22 @@ public class RobotConfig implements IRobot{
         gyro = new AHRS();
         //TODO: find actual channels
         encoder = new Encoder(0, 1);
-
-        //TODO: confirm parameters for Double Solenoid
-        // kickPiston = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, 1, 0);
+        leftGrabArm = new WPI_TalonFX(9);
+        leftGrabArm.setInverted(true);
+        rightGrabArm = new WPI_TalonFX(8);
+        swingArmLeft = new WPI_TalonSRX(11);
+        swingArmLeft.setInverted(true);
+        swingArmRight = new WPI_TalonSRX(10);
+        //TODO: find actual inputs
+//        grabHookLimitSwitch = new DigitalLimitSwitch(new DigitalInput(5));
+//        swingHookLimitSwitch = new DigitalLimitSwitch(new DigitalInput(6));
+//        fullExtendLimitSwitch = new DigitalLimitSwitch(new DigitalInput(7));
+//        fullRetractLimitSwitch = new DigitalLimitSwitch(new DigitalInput(3));
+//        swingForwardLimitSwitch = new DigitalLimitSwitch(new DigitalInput(2));
+//        swingBackLimitSwitch = new DigitalLimitSwitch(new DigitalInput(2));
 
         //ballSensor1 = new DigitalInput(99);
         //ballSensor2 = new DigitalInput(9);
-        //gateKeepMotor = new WPI_VictorSPX(7);
     }
     @Override
     public MotorController getFrontLeftMotor() {
@@ -97,11 +120,6 @@ public class RobotConfig implements IRobot{
     @Override
     public MotorController getCollectorMotor() {
         return collectorMotor;
-    }
-
-    @Override
-    public DoubleSolenoid getKickPiston() {
-        return null;
     }
 
     @Override
@@ -153,5 +171,55 @@ public class RobotConfig implements IRobot{
     @Override
     public double getValueThing() {
         return SmartDashboard.getNumber("ThrowerPct", 0);
+    }
+
+    @Override
+    public MotorController getLeftGrabArm() {
+        return leftGrabArm;
+    }
+
+    @Override
+    public MotorController getRightGrabArm() {
+        return rightGrabArm;
+    }
+
+    @Override
+    public MotorController getSwingArmLeft() {
+        return swingArmLeft;
+    }
+
+    @Override
+    public MotorController getSwingArmRight() {
+        return swingArmRight;
+    }
+
+    @Override
+    public DigitalLimitSwitch getGrabHookedLimitSwitch() {
+        return grabHookLimitSwitch;
+    }
+
+    @Override
+    public DigitalLimitSwitch getSwingHookedLimitSwtich() {
+        return swingHookLimitSwitch;
+    }
+
+    @Override
+    public DigitalLimitSwitch getFullExtendLimitSwitch() {
+        return fullExtendLimitSwitch;
+    }
+
+    @Override
+    public DigitalLimitSwitch getFullRetractLimitSwitch() {
+        return fullRetractLimitSwitch;
+    }
+
+    @Override
+    public DigitalLimitSwitch getSwingForwardLimitSwitch() {
+        return swingForwardLimitSwitch;
+    }
+
+    @Override
+    public DigitalLimitSwitch getSwingBackLimitSwitch() {
+        return swingBackLimitSwitch;
     }
 }

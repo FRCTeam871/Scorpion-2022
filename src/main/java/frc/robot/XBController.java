@@ -19,10 +19,15 @@ public class XBController implements IController {
         xboxController = new GenericJoystick<XBoxButtons, XBoxAxes>(prit, Arrays.asList(XBoxButtons.values()), Arrays.asList(XBoxAxes.values()));
         xboxController.getButton(XBoxButtons.LBUMPER).setMode(ButtonTypes.RISING);
         xboxController.getButton(XBoxButtons.A).setMode(ButtonTypes.MOMENTARY);
+        xboxController.getButton(XBoxButtons.B).setMode(ButtonTypes.MOMENTARY);
+        xboxController.getButton(XBoxButtons.X).setMode(ButtonTypes.MOMENTARY);
+        xboxController.getButton(XBoxButtons.Y).setMode(ButtonTypes.MOMENTARY);
         xboxController.getAxis(XBoxAxes.LEFTX).setDeadband(DEADBANDLEFT);
         xboxController.getAxis(XBoxAxes.LEFTY).setDeadband(DEADBANDLEFT);
         xboxController.getAxis(XBoxAxes.RIGHTX).setDeadband(DEADBANDRIGHT);
-        xboxController.getButton(XBoxButtons.X).setMode(ButtonTypes.MOMENTARY);
+        xboxController.getButton(XBoxButtons.RBUMPER).setMode(ButtonTypes.MOMENTARY);
+        xboxController.getButton(XBoxButtons.START).setMode(ButtonTypes.RISING);
+        xboxController.getButton(XBoxButtons.BACK).setMode(ButtonTypes.RISING);
     }
     @Override
     public HIDAxis getDriveX() {
@@ -87,6 +92,16 @@ public class XBController implements IController {
     @Override
     public HIDButton getRegurgitateButton() {
         return xboxController.getButton(XBoxButtons.X);
+    }
+
+    @Override
+    public HIDButton getClimbButton() {
+        return xboxController.getButton(XBoxButtons.START);
+    }
+
+    @Override
+    public HIDButton emergencyStopClimb() {
+        return xboxController.getButton(XBoxButtons.BACK);
     }
 }
 

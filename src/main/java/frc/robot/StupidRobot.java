@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.team871.io.sensor.DigitalLimitSwitch;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
@@ -51,11 +52,6 @@ public class StupidRobot implements IRobot{
     }
 
     @Override
-    public DoubleSolenoid getKickPiston() {
-        return dummySolenoid;
-    }
-
-    @Override
     public void update(IController iController) {
     }
 
@@ -87,5 +83,55 @@ public class StupidRobot implements IRobot{
     @Override
     public double getValueThing() {
         return 0;
+    }
+
+    @Override
+    public MotorController getLeftGrabArm() {
+        return null;
+    }
+
+    @Override
+    public MotorController getRightGrabArm() {
+        return null;
+    }
+
+    @Override
+    public MotorController getSwingArmRight() {
+        return null;
+    }
+
+    @Override
+    public MotorController getSwingArmLeft() {
+        return null;
+    }
+
+    @Override
+    public DigitalLimitSwitch getGrabHookedLimitSwitch() {
+        return null;
+    }
+
+    @Override
+    public DigitalLimitSwitch getSwingHookedLimitSwtich() {
+        return null;
+    }
+
+    @Override
+    public DigitalLimitSwitch getFullExtendLimitSwitch() {
+        return null;
+    }
+
+    @Override
+    public DigitalLimitSwitch getFullRetractLimitSwitch() {
+        return null;
+    }
+
+    @Override
+    public DigitalLimitSwitch getSwingForwardLimitSwitch() {
+        return null;
+    }
+
+    @Override
+    public DigitalLimitSwitch getSwingBackLimitSwitch() {
+        return null;
     }
 }

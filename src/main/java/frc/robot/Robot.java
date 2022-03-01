@@ -9,6 +9,7 @@ package frc.robot;
 //import edu.wpi.first.cscore.CvSink;
 //import edu.wpi.first.cscore.CvSource;
 //import edu.wpi.first.cscore.UsbCamera;
+import com.team871.hid.HIDAxis;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +34,7 @@ public class Robot extends TimedRobot {
     private IRobot config;
     private Collector collector;
     private Shooter shooter;
+    private Hanger hanger;
     
     /**
      * This method is run when the robot is first started up and should be used for any
@@ -49,6 +51,7 @@ public class Robot extends TimedRobot {
         drive = new DriveTrain(config.getFrontLeftMotor(), config.getFrontRightMotor(), config.getRearLeftMotor(), config.getRearRightMotor());
         collector = new Collector(config);
         shooter = new Shooter(config, 6);
+        hanger = new Hanger(config);
 
 //        new Thread(() -> {
 //        UsbCamera cam = CameraServer.startAutomaticCapture();
@@ -109,12 +112,18 @@ public class Robot extends TimedRobot {
     /** This method is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-        //config.update(xbox);
-//        drive.driveMecanum(xbox.getDriveX(), xbox.getDriveY(), xbox.getDriveZ());
-        shooter.fireUpdate(xbox.getFireButton());
+        //TODO: Determine whether update is needed
+        config.update(xbox);
+        // drive.driveMecanum(xbox.getDriveX(), xbox.getDriveY(), xbox.getDriveZ(), xbox.getFireButton()/*, xbox.getDriveY(), xbox.getDriveX()*/);
+        // shooter.fireUpdate(xbox.getFireButton());
         //shooter.setRMP(0);
-//        collector.activateCollector(xbox.getCollectorAxis());
-//        collector.invertCollector(xbox.getRegurgitateButton());
+        collector.activateCollector(xbox.getCollectorAxis());
+        collector.invertCollector(xbox.getRegurgitateButton());
+        // shooter.limeLight();
+        //TODO: UNCOMMENT
+//        hanger.update(xbox.getClimbButton(), xbox.emergencyStopClimb());
+        hanger.dirveClimber(xbox.getDriveY(), xbox.getDriveZ());
+        hanger.calcatePitchPID();
     }
     
     
