@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.team871.io.sensor.DigitalLimitSwitch;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -71,7 +72,7 @@ public class StupidRobot implements IRobot{
     }
 
     @Override
-    public Gyro getGyro() {
+    public AHRS getGyro() {
         return null;
     }
 

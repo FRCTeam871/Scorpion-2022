@@ -9,99 +9,124 @@ import com.team871.hid.joystick.XBoxButtons;
 import java.util.Arrays;
 
 public class XBController implements IController {
-    private GenericJoystick<XBoxButtons, XBoxAxes> xboxController;
+    private GenericJoystick<XBoxButtons, XBoxAxes> driveController;
+    private GenericJoystick<XBoxButtons, XBoxAxes> climbController;
     private static final double DEADBANDLEFT = .15;
     private static final double DEADBANDRIGHT = .15;
+
     /**
-     * @param prit the values of the buttons and axes on the controller
+     * @param drivePort the values of the buttons and axes on the controller
      */
-    public XBController(int prit) {
-        xboxController = new GenericJoystick<XBoxButtons, XBoxAxes>(prit, Arrays.asList(XBoxButtons.values()), Arrays.asList(XBoxAxes.values()));
-        xboxController.getButton(XBoxButtons.LBUMPER).setMode(ButtonTypes.RISING);
-        xboxController.getButton(XBoxButtons.A).setMode(ButtonTypes.MOMENTARY);
-        xboxController.getButton(XBoxButtons.B).setMode(ButtonTypes.MOMENTARY);
-        xboxController.getButton(XBoxButtons.X).setMode(ButtonTypes.MOMENTARY);
-        xboxController.getButton(XBoxButtons.Y).setMode(ButtonTypes.MOMENTARY);
-        xboxController.getAxis(XBoxAxes.LEFTX).setDeadband(DEADBANDLEFT);
-        xboxController.getAxis(XBoxAxes.LEFTY).setDeadband(DEADBANDLEFT);
-        xboxController.getAxis(XBoxAxes.RIGHTX).setDeadband(DEADBANDRIGHT);
-        xboxController.getButton(XBoxButtons.RBUMPER).setMode(ButtonTypes.MOMENTARY);
-        xboxController.getButton(XBoxButtons.START).setMode(ButtonTypes.RISING);
-        xboxController.getButton(XBoxButtons.BACK).setMode(ButtonTypes.RISING);
+    public XBController(int drivePort, int climbPort) {
+        driveController = new GenericJoystick<XBoxButtons, XBoxAxes>(drivePort, Arrays.asList(XBoxButtons.values()), Arrays.asList(XBoxAxes.values()));
+        driveController.getButton(XBoxButtons.A).setMode(ButtonTypes.MOMENTARY);
+        driveController.getButton(XBoxButtons.B).setMode(ButtonTypes.MOMENTARY);
+        driveController.getButton(XBoxButtons.X).setMode(ButtonTypes.MOMENTARY);
+        driveController.getButton(XBoxButtons.Y).setMode(ButtonTypes.MOMENTARY);
+        driveController.getButton(XBoxButtons.LBUMPER).setMode(ButtonTypes.RISING);
+        driveController.getButton(XBoxButtons.RBUMPER).setMode(ButtonTypes.MOMENTARY);
+//        driveController.getButton(XBoxButtons.START).setMode(ButtonTypes.RISING);
+//        driveController.getButton(XBoxButtons.BACK).setMode(ButtonTypes.RISING);
+        driveController.getAxis(XBoxAxes.LEFTX).setDeadband(DEADBANDLEFT);
+        driveController.getAxis(XBoxAxes.LEFTY).setDeadband(DEADBANDLEFT);
+        driveController.getAxis(XBoxAxes.RIGHTX).setDeadband(DEADBANDRIGHT);
+
+        climbController = new GenericJoystick<XBoxButtons, XBoxAxes>(climbPort, Arrays.asList(XBoxButtons.values()), Arrays.asList(XBoxAxes.values()));
+        climbController.getButton(XBoxButtons.A).setMode(ButtonTypes.MOMENTARY);
+        climbController.getButton(XBoxButtons.B).setMode(ButtonTypes.MOMENTARY);
+        climbController.getAxis(XBoxAxes.LEFTY).setDeadband(DEADBANDLEFT);
+        climbController.getAxis(XBoxAxes.RIGHTX).setDeadband(DEADBANDRIGHT);
+        climbController.getAxis(XBoxAxes.RIGHTY).setDeadband(DEADBANDRIGHT);
     }
+
     @Override
     public HIDAxis getDriveX() {
-        return xboxController.getAxis(XBoxAxes.LEFTX);
+        return driveController.getAxis(XBoxAxes.LEFTX);
     }
 
     @Override
     public HIDAxis getDriveY() {
-        return xboxController.getAxis(XBoxAxes.LEFTY);
+        return driveController.getAxis(XBoxAxes.LEFTY);
     }
 
     @Override
     public HIDAxis getDriveZ() {
-        return xboxController.getAxis(XBoxAxes.RIGHTX);
+        return driveController.getAxis(XBoxAxes.RIGHTX);
     }
 
     @Override
     public HIDAxis getLeftAxis() {
-        return xboxController.getAxis(XBoxAxes.LEFTY);
+        return driveController.getAxis(XBoxAxes.LEFTY);
     }
 
     @Override
     public HIDAxis getRightAxis() {
-        return xboxController.getAxis(XBoxAxes.LEFTX);
+        return driveController.getAxis(XBoxAxes.LEFTX);
+    }
+
+    @Override
+    public HIDAxis getClimbGrabAxis() {
+        return climbController.getAxis(XBoxAxes.LEFTY);
+    }
+
+    @Override
+    public HIDAxis getClimbSwingAxis() {
+        return climbController.getAxis(XBoxAxes.RIGHTX);
+    }
+
+    @Override
+    public HIDAxis getAltClimbSwingAxis() {
+        return null;
     }
 
     @Override
     public HIDButton getRearRightButton() {
-        return xboxController.getButton(XBoxButtons.B);
+        return driveController.getButton(XBoxButtons.B);
     }
 
     @Override
     public HIDButton getRearLeftButton() {
-        return xboxController.getButton(XBoxButtons.A);
+        return driveController.getButton(XBoxButtons.A);
     }
 
     @Override
     public HIDButton getFrontRightButton() {
-        return xboxController.getButton(XBoxButtons.Y);
+        return driveController.getButton(XBoxButtons.Y);
     }
 
     @Override
     public HIDButton getFrontLeftButton() {
-        return xboxController.getButton(XBoxButtons.X);
+        return driveController.getButton(XBoxButtons.X);
     }
 
     @Override
     public HIDButton getInvertButton() {
-        return xboxController.getButton(XBoxButtons.LBUMPER);
+        return driveController.getButton(XBoxButtons.LBUMPER);
     }
 
     @Override
     public HIDButton getFireButton() {
-        return xboxController.getButton(XBoxButtons.A);
+        return driveController.getButton(XBoxButtons.A);
     }
 
     @Override
     public HIDAxis getCollectorAxis() {
-        return xboxController.getAxis(XBoxAxes.RTRIGGER);
+        return driveController.getAxis(XBoxAxes.RTRIGGER);
     }
 
     @Override
     public HIDButton getRegurgitateButton() {
-        return xboxController.getButton(XBoxButtons.X);
+        return driveController.getButton(XBoxButtons.X);
     }
 
     @Override
     public HIDButton getClimbButton() {
-        return xboxController.getButton(XBoxButtons.START);
+        return climbController.getButton(XBoxButtons.A);
     }
 
     @Override
-    public HIDButton emergencyStopClimb() {
-        return xboxController.getButton(XBoxButtons.BACK);
+    public HIDButton getRevertClimbButton() {
+        return climbController.getButton(XBoxButtons.B);
     }
 }
 

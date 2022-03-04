@@ -26,7 +26,7 @@ public class RobotConfig implements IRobot{
     private DigitalInput ballSensor1;
     private DigitalInput ballSensor2;
     private MotorController gateKeepMotor;
-    private Gyro gyro;
+    private AHRS gyro;
     private Encoder encoder;
     private MotorController leftGrabArm;
     private MotorController rightGrabArm;
@@ -85,12 +85,12 @@ public class RobotConfig implements IRobot{
 //        grabHookLimitSwitch = new DigitalLimitSwitch(new DigitalInput(5));
 //        swingHookLimitSwitch = new DigitalLimitSwitch(new DigitalInput(6));
 //        fullExtendLimitSwitch = new DigitalLimitSwitch(new DigitalInput(7));
-//        fullRetractLimitSwitch = new DigitalLimitSwitch(new DigitalInput(3));
-//        swingForwardLimitSwitch = new DigitalLimitSwitch(new DigitalInput(2));
-//        swingBackLimitSwitch = new DigitalLimitSwitch(new DigitalInput(2));
+        fullRetractLimitSwitch = new DigitalLimitSwitch(new DigitalInput(3));
+        swingForwardLimitSwitch = new DigitalLimitSwitch(new DigitalInput(6));
+        swingBackLimitSwitch = new DigitalLimitSwitch(new DigitalInput(5));
 
-        //ballSensor1 = new DigitalInput(99);
-        //ballSensor2 = new DigitalInput(9);
+        ballSensor1 = new DigitalInput(9);
+        ballSensor2 = new DigitalInput(8);
     }
     @Override
     public MotorController getFrontLeftMotor() {
@@ -159,7 +159,7 @@ public class RobotConfig implements IRobot{
     }
 
     @Override
-    public Gyro getGyro() {
+    public AHRS getGyro() {
         return gyro;
     }
 

@@ -26,10 +26,12 @@ public class Shooter {
     private PIDController shooterPID;
     private Encoder encoder;
     private double previousOutput = 0.0;
-    private double cameraHeight = 1;
-    private double targetHeight = 8 + 8 / 12;
-    private double cameraAngle = 5 * Math.PI / 36;
-    private double targetAngle = 1;
+    private final double cameraHeight = 1;
+    private final double targetHeight = 8 + 8 / 12;
+    private final double cameraAngle = 5 * Math.PI / 36;
+    private final double targetAngle = 1;
+    private final double SPIN_UP_TIME = 1000;
+    private final double EXIT_TIME = 500;
 
     public Shooter(IRobot robot, double distanceFromHub) {
         this.distanceFromHub = distanceFromHub;
@@ -43,57 +45,87 @@ public class Shooter {
         //pulses per revolution = 48
         encoder.setDistancePerPulse(Math.PI / 24);
         SmartDashboard.putData("Encoder", encoder);
+        SmartDashboard.putData("BallSensor1", ballSensor1);
+        SmartDashboard.putData("BallSensor2", ballSensor2);
         this.robot = robot;
     }
 
-    public void fireUpdate(HIDButton fireButton) {
-        if (currentState == FireState.WAIT) {
-            gatekeeperMotor.set(CHILL_BRO);
-            if (fireButton.getValue()) {
-                currentState = FireState.SPIN_UP;
-                startTime = System.currentTimeMillis();
-//                setSetPoint();
-            }
-//            else {
-//                if (fireButton.getValue() && ballSensor1.get() && ballSensor2.get()) {
-//                    currentState = FireState.SPIN_UP;
-//                    startTime = System.currentTimeMillis();
-//                    setSetPoint(600);
-//                }
-//            }
+    public void testFireUpdate(HIDButton fireButton) {
+        double launchSpeed = 0;
+        double gateSpeed = 0;
+        switch (currentState) {
+            case WAIT:
+                launchSpeed = CHILL_BRO;
+                gateSpeed = CHILL_BRO;
+                if (fireButton.getValue()) {
+                    currentState = FireState.SPIN_UP;
+                    startTime = System.currentTimeMillis();
+                }
+                break;
+            case SPIN_UP:
+                launchSpeed = YOLO;
+                gateSpeed = CHILL_BRO;
+                if (!fireButton.getValue()) {
+                    currentState = FireState.WAIT;
+                } else if (System.currentTimeMillis() - startTime >= SPIN_UP_TIME) {
+                    currentState = FireState.FIRE;
+                }
+                break;
+            case FIRE:
+                launchSpeed = YOLO;
+                gateSpeed = YOLO;
+                if (!fireButton.getValue()) {
+                    currentState = FireState.WAIT;
+                }
+                break;
         }
-
-        if (currentState == FireState.SPIN_UP) {
-            launchMotor.set(YOLO);
-            if ((System.currentTimeMillis() - startTime) >= 1000) {
-                currentState = FireState.FIRE;
-            }
-        }
-        if (currentState == FireState.FIRE) {
-            gatekeeperMotor.set(YOLO);
-//                if(!ballSensor1.get() && !ballSensor2.get()){
-//                    currentState = FireState.WAIT;
-//                    setSetPoint(0.);
-//                }
-            if (!fireButton.getValue()) {
-                currentState = FireState.WAIT;
-//                    setSetPoint(0.);
-                launchMotor.set(0.);
-            }
-
-        }
-//            else {
-//                gatekeeperMotor.set(YOLO);
-//                if (!fireButton.getValue()) {
-//                    currentState = FireState.WAIT;
-//                    setSetPoint(0.);
-//                }
-//            }
-
-//            updateAndOutputPID();
-
+        launchMotor.set(launchSpeed);
+        gatekeeperMotor.set(gateSpeed);
     }
 
+    public void fireUpdate(HIDButton fireButton) {
+        double gateSpeed = 0;
+        double launchSpeed = 0;
+        switch (currentState) {
+            case WAIT:
+                gateSpeed = CHILL_BRO;
+                launchSpeed = CHILL_BRO;
+                if (fireButton.getValue() && ballSensor1.get() || ballSensor2.get()) {
+                    currentState = FireState.SPIN_UP;
+                    startTime = System.currentTimeMillis();
+                    shooterPID.reset();
+                }
+                break;
+            case SPIN_UP:
+                gateSpeed = CHILL_BRO;
+                launchSpeed = calculateVVector();
+                if (!fireButton.getValue()) {
+                    currentState = FireState.WAIT;
+                } else if (System.currentTimeMillis() - startTime >= SPIN_UP_TIME) {
+                    currentState = FireState.FIRE;
+                }
+                break;
+            case FIRE:
+                gateSpeed = YOLO;
+                launchSpeed = calculateVVector();
+                if (ballSensor1.get() || ballSensor2.get()) {
+                    startTime = System.currentTimeMillis();
+                }
+                //TODO: Possibly optimize the if-condition
+                if (!fireButton.getValue() || (System.currentTimeMillis() - startTime >= EXIT_TIME)) {
+                    currentState = FireState.WAIT;
+                }
+                break;
+        }
+        if (gateSpeed == CHILL_BRO && ballSensor2.get() && !ballSensor1.get()) {
+            gateSpeed = YOLO;
+        }
+        gatekeeperMotor.set(gateSpeed);
+        shooterPID.setSetpoint(launchSpeed);
+        updateAndOutputPID();
+    }
+
+    //TODO: Get actual x-distance from target using camera
     public double calculateDistance() {
         double currentDistance;
         currentDistance = (targetHeight * cameraHeight) / Math.tan(cameraAngle * targetAngle);
@@ -104,16 +136,6 @@ public class Shooter {
         vVector = Math.sqrt((1 / 2 * GRAV) * ((calculateDistance() * calculateDistance()) /
                 ((Math.cos(THETA) * Math.cos(THETA)) * (calculateDistance() * Math.tan(THETA) - HEIGHT))));
         return vVector;
-    }
-
-    public void setSetPoint() {
-        shooterPID.setSetpoint(calculateVVector());
-        shooterPID.reset();
-    }
-
-    public void setSetPoint(double speed) {
-        shooterPID.setSetpoint(speed);
-        shooterPID.reset();
     }
 
     private void updateAndOutputPID() {

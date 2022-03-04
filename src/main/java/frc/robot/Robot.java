@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
         chooser.addOption("My Auto", CUSTOM_AUTO);
         SmartDashboard.putData("Auto choices", chooser);
 
-        xbox = new XBController(0);
+        xbox = new XBController(0, 1);
         config = new RobotConfig();
         drive = new DriveTrain(config.getFrontLeftMotor(), config.getFrontRightMotor(), config.getRearLeftMotor(), config.getRearRightMotor());
         collector = new Collector(config);
@@ -114,16 +114,16 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         //TODO: Determine whether update is needed
         config.update(xbox);
-        // drive.driveMecanum(xbox.getDriveX(), xbox.getDriveY(), xbox.getDriveZ(), xbox.getFireButton()/*, xbox.getDriveY(), xbox.getDriveX()*/);
-        // shooter.fireUpdate(xbox.getFireButton());
+        drive.driveMecanum(xbox.getDriveX(), xbox.getDriveY(), xbox.getDriveZ(), xbox.getFireButton()/*, xbox.getDriveY(), xbox.getDriveX()*/);
+        shooter.fireUpdate(xbox.getFireButton());
         //shooter.setRMP(0);
         collector.activateCollector(xbox.getCollectorAxis());
         collector.invertCollector(xbox.getRegurgitateButton());
         // shooter.limeLight();
         //TODO: UNCOMMENT
 //        hanger.update(xbox.getClimbButton(), xbox.emergencyStopClimb());
-        hanger.dirveClimber(xbox.getDriveY(), xbox.getDriveZ());
-        hanger.calcatePitchPID();
+        //hanger.dirveClimber(xbox.getClimbGrabAxis(), xbox.getClimbSwingAxis());
+        hanger.calcatePitchPID(xbox.getClimbSwingAxis());
     }
     
     

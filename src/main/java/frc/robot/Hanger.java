@@ -3,10 +3,11 @@ package frc.robot;
 import com.kauailabs.navx.frc.AHRS;
 import com.team871.hid.HIDAxis;
 import com.team871.hid.HIDButton;
+import com.team871.hid.joystick.XBoxButtons;
 import com.team871.io.sensor.DigitalLimitSwitch;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Hanger {
 
@@ -24,7 +25,7 @@ public class Hanger {
     private final double GRAB_SPEED = .5;
     private final double SWING_SPEED = .5;
     private final double CHILL_BRO = 0.0;
-    private PIDController PitchPID;
+    private PIDController pitchPID;
     private double previousAngle = 0;
     private AHRS gyro;
     private double position;
@@ -34,16 +35,24 @@ public class Hanger {
         rightGrabMotor = robot.getRightGrabArm();
         leftSwingMotor = robot.getSwingArmLeft();
         rightSwingMotor = robot.getSwingArmRight();
-        grabHookedLimitSwitch = robot.getGrabHookedLimitSwitch();
-        swingHookedLimitSwitch = robot.getSwingHookedLimitSwtich();
-        fullExtendLimitSwitch = robot.getFullExtendLimitSwitch();
+        //TODO: Uncomment when the robot has these limit switches
+//        grabHookedLimitSwitch = robot.getGrabHookedLimitSwitch();
+//        swingHookedLimitSwitch = robot.getSwingHookedLimitSwtich();
+//        fullExtendLimitSwitch = robot.getFullExtendLimitSwitch();
         fullRetractLimitSwtich = robot.getFullRetractLimitSwitch();
         state = ClimbState.FORWARD_RETRACT;
         swingForwardLimitSwitch = robot.getSwingForwardLimitSwitch();
         swingBackLimitSwitch = robot.getSwingBackLimitSwitch();
         grabHookedLimitSwitch = robot.getGrabHookedLimitSwitch();
-        PitchPID = new PIDController(0.000001, 0., 0.00003);
+        pitchPID = new PIDController(0.01111, 0., 0.00555);
         gyro = robot.getGyro();
+        //TODO: Uncomment
+//        SmartDashboard.putData("Grab Extended", fullExtendLimitSwitch.getRawInput());
+        SmartDashboard.putData("Grab Retracted", fullRetractLimitSwtich.getRawInput());
+        SmartDashboard.putData("Swing Forward", swingForwardLimitSwitch.getRawInput());
+        SmartDashboard.putData("Swing Backwards", swingBackLimitSwitch.getRawInput());
+        SmartDashboard.putData("PitchPID", pitchPID);
+
     }
 
     private void extendArms() {
@@ -57,7 +66,7 @@ public class Hanger {
     }
 
     private void retractArms() {
-        if (fullRetractLimitSwtich.get()) {
+        if (!fullRetractLimitSwtich.get()) {
             leftGrabMotor.set(CHILL_BRO);
             rightGrabMotor.set(CHILL_BRO);
         } else {
@@ -77,7 +86,7 @@ public class Hanger {
     }
 
     private void swingBackwards() {
-        if (swingBackLimitSwitch.get()) {
+        if (!swingBackLimitSwitch.get()) {
             rightSwingMotor.set(CHILL_BRO);
             leftSwingMotor.set(CHILL_BRO);
         } else {
@@ -85,6 +94,11 @@ public class Hanger {
             leftSwingMotor.set(-SWING_SPEED);
         }
     }
+
+    public void dumbUpdate() {
+
+    }
+
 
     //TODO: finish state machine web
     public void update(HIDButton climbRequested, HIDButton emergencyBack) {
@@ -214,17 +228,39 @@ public class Hanger {
 
     public void dirveClimber(HIDAxis grabAxis, HIDAxis swingAxis) {
         double factor = .25;
-        leftGrabMotor.set(grabAxis.getValue());
-        rightGrabMotor.set(grabAxis.getValue());
-        leftSwingMotor.set(swingAxis.getValue() * ((swingAxis.getValue() < 0) ? .1 : 1));
-        rightSwingMotor.set(swingAxis.getValue() * ((swingAxis.getValue() < 0) ? .1 : 1));
-
+        double grabSpeed = grabAxis.getValue();
+        double swingSpeed = swingAxis.getValue();
+        //TODO: Uncomment when limit switch is on robor
+        if ((grabSpeed < 0 /*&& !fullExtendLimitSwitch.get()*/) || (grabSpeed > 0 && fullRetractLimitSwtich.get())) {
+            leftGrabMotor.set(grabSpeed);
+            rightGrabMotor.set(grabSpeed);
+        } else {
+            leftGrabMotor.set(0);
+            rightGrabMotor.set(0);
+        }
+        if ((swingSpeed > 0 && !swingForwardLimitSwitch.get()) || (swingSpeed < 0 && swingBackLimitSwitch.get())) {
+            leftSwingMotor.set((swingSpeed) * ((swingAxis.getValue() < 0) ? .1 : 1));
+            rightSwingMotor.set((swingSpeed) * ((swingAxis.getValue() < 0) ? .1 : 1));
+        } else {
+            leftSwingMotor.set(0);
+            rightSwingMotor.set(0);
+        }
+        SmartDashboard.putNumber("swingSpeed", (swingSpeed) * ((swingAxis.getValue() < 0) ? .1 : 1));
+        SmartDashboard.putNumber("grabSpeed", grabSpeed);
+        SmartDashboard.putNumber("Pitch", gyro.getPitch());
+        SmartDashboard.putNumber("Yaw", gyro.getYaw());
+        SmartDashboard.putNumber("Roll", gyro.getRoll());
     }
 
-    public void calcatePitchPID() {
-        position = gyro.getPitch();
-        leftSwingMotor = PitchPID.calculate(position);
-        rightSwingMotor = PitchPID.calculate(position);
+    //TODO: Fix so that user can set the setpoint ~ Gamer
+    public void calcatePitchPID(HIDAxis swingAxis) {
+        double targetAngle = (swingAxis.getValue() + 1) * 22.5;
+        final double tiltSpeed = pitchPID.calculate(Math.abs(gyro.getRoll()), targetAngle);
+        SmartDashboard.putNumber("tiltSpeed", tiltSpeed);
+        SmartDashboard.putNumber("targetAngle", targetAngle);
+        SmartDashboard.putNumber("Roll", gyro.getRoll());
+        leftSwingMotor.set(-tiltSpeed);
+        rightSwingMotor.set(-tiltSpeed);
     }
 
 }

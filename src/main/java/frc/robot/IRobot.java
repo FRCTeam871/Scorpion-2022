@@ -1,5 +1,6 @@
 package frc.robot;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.team871.io.sensor.DigitalLimitSwitch;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
@@ -58,7 +59,7 @@ public interface IRobot {
     /**
      * @return the gyro of the drivetrain
      */
-    Gyro getGyro();
+    AHRS getGyro();
 
     /**
      * measure the rpm of the firing wheel on the shooter

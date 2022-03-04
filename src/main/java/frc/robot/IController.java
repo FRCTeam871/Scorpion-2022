@@ -2,7 +2,6 @@ package frc.robot;
 
 import com.team871.hid.HIDAxis;
 import com.team871.hid.HIDButton;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 
 public interface IController {
     /**
@@ -20,21 +19,39 @@ public interface IController {
      * @return The z-axis of the drive train
      */
     HIDAxis getDriveZ();
+
     /**
      * @return The axis used to control the left side of the drive train in tank drive
      */
     HIDAxis getLeftAxis();
+
     /**
      * @return The axis used to control the right side of the drive train in tank drive
      */
     HIDAxis getRightAxis();
+
+    /**
+     * @return the axis controlling the vertical arms
+     */
+    HIDAxis getClimbGrabAxis();
+
+    /**
+     * @return the axis controlling the swing arms
+     */
+    HIDAxis getClimbSwingAxis();
+
+    HIDAxis getAltClimbSwingAxis();
+
     /**
      * The button which enable/disables rear right motor
+     *
      * @return The rear right button
      */
     HIDButton getRearRightButton();
+
     /**
      * The button which enables/disables rear left motor
+     *
      * @return The rear left button
      */
     HIDButton getRearLeftButton();
@@ -70,5 +87,5 @@ public interface IController {
 
     HIDButton getClimbButton();
 
-    HIDButton emergencyStopClimb();
+    HIDButton getRevertClimbButton();
 }
