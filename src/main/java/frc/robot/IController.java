@@ -42,6 +42,8 @@ public interface IController {
 
     HIDAxis getAltClimbSwingAxis();
 
+    HIDButton getActivateSwingPIDButton();
+
     /**
      * The button which enable/disables rear right motor
      *

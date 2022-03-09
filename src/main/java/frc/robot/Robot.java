@@ -9,7 +9,6 @@ package frc.robot;
 //import edu.wpi.first.cscore.CvSink;
 //import edu.wpi.first.cscore.CvSource;
 //import edu.wpi.first.cscore.UsbCamera;
-import com.team871.hid.HIDAxis;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -114,27 +113,28 @@ public class Robot extends TimedRobot {
     public void teleopPeriodic() {
         //TODO: Determine whether update is needed
         config.update(xbox);
-        drive.driveMecanum(xbox.getDriveX(), xbox.getDriveY(), xbox.getDriveZ(), xbox.getFireButton()/*, xbox.getDriveY(), xbox.getDriveX()*/);
-        shooter.fireUpdate(xbox.getFireButton());
-        //shooter.setRMP(0);
+        drive.driveMecanum(xbox.getDriveX(), xbox.getDriveY(), xbox.getDriveZ(), xbox.getFireButton());
+        shooter.fireUpdate(xbox.getFireButton(), drive.isOnTarget());
         collector.activateCollector(xbox.getCollectorAxis());
         collector.invertCollector(xbox.getRegurgitateButton());
-        // shooter.limeLight();
         //TODO: UNCOMMENT
 //        hanger.update(xbox.getClimbButton(), xbox.emergencyStopClimb());
-        //hanger.dirveClimber(xbox.getClimbGrabAxis(), xbox.getClimbSwingAxis());
-        hanger.calcatePitchPID(xbox.getClimbSwingAxis());
+        hanger.update(xbox.getClimbSwingAxis(), xbox.getClimbGrabAxis(), xbox.getActivateSwingPIDButton());
     }
     
     
     /** This method is called once when the robot is disabled. */
     @Override
     public void disabledInit() {}
-    
-    
-    /** This method is called periodically when disabled. */
+
+
+    /**
+     * This method is called periodically when disabled.
+     */
     @Override
-    public void disabledPeriodic() {}
+    public void disabledPeriodic() {
+        drive.calculateAim();
+    }
     
     
     /** This method is called once when test mode is enabled. */

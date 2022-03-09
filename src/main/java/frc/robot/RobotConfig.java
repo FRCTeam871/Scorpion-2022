@@ -124,10 +124,6 @@ public class RobotConfig implements IRobot{
 
     @Override
     public void update(IController iController) {
-//        frontLeft.setEnabled(iController.getFrontLeftButton().getValue());
-//        frontRight.setEnabled(iController.getFrontRightButton().getValue());
-//        rearLeft.setEnabled(iController.getRearLeftButton().getValue());
-//        rearRight.setEnabled(iController.getRearRightButton().getValue());
 
         if (iController.getFrontLeftButton().getValue() && iController.getInvertButton().getValue()) {
             frontLeft.setInverted(!frontLeft.getInverted());

@@ -37,6 +37,7 @@ public class XBController implements IController {
         climbController.getAxis(XBoxAxes.LEFTY).setDeadband(DEADBANDLEFT);
         climbController.getAxis(XBoxAxes.RIGHTX).setDeadband(DEADBANDRIGHT);
         climbController.getAxis(XBoxAxes.RIGHTY).setDeadband(DEADBANDRIGHT);
+        climbController.getButton(XBoxButtons.RBUMPER).setMode(ButtonTypes.MOMENTARY);
     }
 
     @Override
@@ -80,6 +81,11 @@ public class XBController implements IController {
     }
 
     @Override
+    public HIDButton getActivateSwingPIDButton() {
+        return climbController.getButton(XBoxButtons.RBUMPER);
+    }
+
+    @Override
     public HIDButton getRearRightButton() {
         return driveController.getButton(XBoxButtons.B);
     }
@@ -106,7 +112,7 @@ public class XBController implements IController {
 
     @Override
     public HIDButton getFireButton() {
-        return driveController.getButton(XBoxButtons.A);
+        return driveController.getButton(XBoxButtons.Y);
     }
 
     @Override
