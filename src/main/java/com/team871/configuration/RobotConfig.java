@@ -1,6 +1,6 @@
-package frc.robot;
+package com.team871.configuration;
 
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -9,89 +9,91 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.team871.io.sensor.DigitalLimitSwitch;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.interfaces.Gyro;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class RobotConfig implements IRobot{
-    private CANSparkMax frontLeft;
-    private CANSparkMax frontRight;
-    private CANSparkMax rearLeft;
-    private CANSparkMax rearRight;
-    private MotorController shooterMotor;
-    private MotorController collectorMotor;
-    private DigitalInput ballSensor1;
-    private DigitalInput ballSensor2;
-    private MotorController gateKeepMotor;
-    private AHRS gyro;
-    private Encoder encoder;
-    private MotorController leftGrabArm;
-    private MotorController rightGrabArm;
-    private MotorController swingArmRight;
-    private MotorController swingArmLeft;
-    private DigitalLimitSwitch grabHookLimitSwitch;
-    private DigitalLimitSwitch swingHookLimitSwitch;
-    private DigitalLimitSwitch fullExtendLimitSwitch;
-    private DigitalLimitSwitch fullRetractLimitSwitch;
-    private DigitalLimitSwitch swingForwardLimitSwitch;
-    private DigitalLimitSwitch swingBackLimitSwitch;
+public class RobotConfig implements IRobot {
+    private final CANSparkMax frontLeft;
+    private final CANSparkMax frontRight;
+    private final CANSparkMax rearLeft;
+    private final CANSparkMax rearRight;
+
+    private final WPI_TalonSRX shooterMotor;
+    private final WPI_VictorSPX collectorMotor;
+    private final WPI_VictorSPX gateKeepMotor;
+    private final WPI_TalonFX leftGrabArm;
+    private final WPI_TalonFX rightGrabArm;
+    private final WPI_TalonSRX swingArmRight;
+    private final WPI_TalonSRX swingArmLeft;
+
+    private final AHRS gyro;
+    private final Encoder encoder;
+
+    private final DigitalInput onDeckSensor;
+    private final DigitalInput loadedSensor;
+    private final DigitalLimitSwitch fullExtendLimitSwitch;
+    private final DigitalLimitSwitch fullRetractLimitSwitch;
+    private final DigitalLimitSwitch swingForwardLimitSwitch;
+    private final DigitalLimitSwitch swingBackLimitSwitch;
 
 
     public RobotConfig() {
-        SmartDashboard.putNumber("ThrowerPct", 5);
-
-        /**
-         * sets front left motor to CanSparkMax motor controller with device id 1
-         */
+        /* sets front left motor to CanSparkMax motor controller with device id 1 */
         frontLeft = new CANSparkMax(1, CANSparkMaxLowLevel.MotorType.kBrushless);
         frontLeft.setIdleMode(CANSparkMax.IdleMode.kCoast);
         frontLeft.setInverted(true);
-        /**
-         * sets front right motor to CanSparkMax motor controller with device id 2
-         */
+
+        /* sets front right motor to CanSparkMax motor controller with device id 2 */
         frontRight = new CANSparkMax(2, CANSparkMaxLowLevel.MotorType.kBrushless);
         frontRight.setIdleMode(CANSparkMax.IdleMode.kCoast);
         frontRight.setInverted(false);
-        /**
-         * sets rear left motor to CanSparkMax motor controller with device id 3
-         */
+
+        /* sets rear left motor to CanSparkMax motor controller with device id 3 */
         rearLeft = new CANSparkMax(3, CANSparkMaxLowLevel.MotorType.kBrushless);
         rearLeft.setIdleMode(CANSparkMax.IdleMode.kCoast);
         rearLeft.setInverted(true);
-        /**
-         * sets rear right motor to CanSparkMax motor controller with device id 4
-         */
+
+        /* sets rear right motor to CanSparkMax motor controller with device id 4 */
         rearRight = new CANSparkMax(4, CANSparkMaxLowLevel.MotorType.kBrushless);
         rearRight.setIdleMode(CANSparkMax.IdleMode.kCoast);
         rearRight.setInverted(false);
+
         collectorMotor = new WPI_VictorSPX(5);
         collectorMotor.setInverted(true);
+        collectorMotor.setNeutralMode(NeutralMode.Coast);
+
         shooterMotor = new WPI_TalonSRX(6);
+        shooterMotor.setNeutralMode(NeutralMode.Coast);
+
         gateKeepMotor = new WPI_VictorSPX(7);
         gateKeepMotor.setInverted(true);
+        gateKeepMotor.setNeutralMode(NeutralMode.Brake);
+
         gyro = new AHRS();
         //TODO: find actual channels
         encoder = new Encoder(0, 1);
         leftGrabArm = new WPI_TalonFX(9);
         leftGrabArm.setInverted(true);
+        leftGrabArm.setNeutralMode(NeutralMode.Brake);
         rightGrabArm = new WPI_TalonFX(8);
+        rightGrabArm.setNeutralMode(NeutralMode.Brake);
+
         swingArmLeft = new WPI_TalonSRX(11);
         swingArmLeft.setInverted(true);
+        swingArmLeft.setNeutralMode(NeutralMode.Brake);
         swingArmRight = new WPI_TalonSRX(10);
+        swingArmRight.setNeutralMode(NeutralMode.Brake);
+
         //TODO: find actual inputs
-//        grabHookLimitSwitch = new DigitalLimitSwitch(new DigitalInput(5));
-//        swingHookLimitSwitch = new DigitalLimitSwitch(new DigitalInput(6));
-//        fullExtendLimitSwitch = new DigitalLimitSwitch(new DigitalInput(7));
+        fullExtendLimitSwitch = new DigitalLimitSwitch(new DigitalInput(7));
         fullRetractLimitSwitch = new DigitalLimitSwitch(new DigitalInput(3));
         swingForwardLimitSwitch = new DigitalLimitSwitch(new DigitalInput(6));
         swingBackLimitSwitch = new DigitalLimitSwitch(new DigitalInput(5));
 
-        ballSensor1 = new DigitalInput(9);
-        ballSensor2 = new DigitalInput(8);
+        onDeckSensor = new DigitalInput(9);
+        loadedSensor = new DigitalInput(8);
     }
+
     @Override
     public MotorController getFrontLeftMotor() {
         return frontLeft;
@@ -123,30 +125,13 @@ public class RobotConfig implements IRobot{
     }
 
     @Override
-    public void update(IController iController) {
-
-        if (iController.getFrontLeftButton().getValue() && iController.getInvertButton().getValue()) {
-            frontLeft.setInverted(!frontLeft.getInverted());
-        }
-        if (iController.getFrontRightButton().getValue() && iController.getInvertButton().getValue()){
-            frontRight.setInverted(!frontRight.getInverted());
-        }
-        if (iController.getRearLeftButton().getValue() && iController.getInvertButton().getValue()){
-            rearLeft.setInverted(!rearLeft.getInverted());
-        }
-        if (iController.getRearRightButton().getValue() && iController.getInvertButton().getValue()){
-            rearRight.setInverted(!rearRight.getInverted());
-        }
+    public DigitalInput getLoadedSensor() {
+        return loadedSensor;
     }
 
     @Override
-    public DigitalInput getSecondBallSensor() {
-        return ballSensor2;
-    }
-
-    @Override
-    public DigitalInput getFirstBallSenor() {
-        return ballSensor1;
+    public DigitalInput getOnDeckSensor() {
+        return onDeckSensor;
     }
 
     @Override
@@ -162,11 +147,6 @@ public class RobotConfig implements IRobot{
     @Override
     public Encoder getShooterEncoder() {
         return encoder;
-    }
-
-    @Override
-    public double getValueThing() {
-        return SmartDashboard.getNumber("ThrowerPct", 0);
     }
 
     @Override
@@ -187,16 +167,6 @@ public class RobotConfig implements IRobot{
     @Override
     public MotorController getSwingArmRight() {
         return swingArmRight;
-    }
-
-    @Override
-    public DigitalLimitSwitch getGrabHookedLimitSwitch() {
-        return grabHookLimitSwitch;
-    }
-
-    @Override
-    public DigitalLimitSwitch getSwingHookedLimitSwtich() {
-        return swingHookLimitSwitch;
     }
 
     @Override
