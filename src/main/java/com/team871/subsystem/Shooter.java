@@ -50,13 +50,14 @@ public class Shooter {
         gatekeeperMotor = robot.getGateKeepingMotor();
         currentState = FireState.WAIT;
 
-        shooterPID = new PIDController(0.00007, 0, 0.00002);
+        shooterPID = new PIDController(0.00448, 0, 0.00016);
         encoder = robot.getShooterEncoder();
 
         // TODO: This seems wrong.  This gives us Radians/tick which translates to Radians/sec for rate.
         //       We really want to compute Rotations/sec because we can easily compute the target value from
         //       the distance to the target.
-        encoder.setDistancePerPulse(Math.PI / 24);
+        //Distance is in revolutions
+        encoder.setDistancePerPulse(1. / 48);
 
         SmartDashboard.putData("Thrower RPS", encoder);
         SmartDashboard.putData("On Deck Sensor", onDeckSensor);
@@ -99,7 +100,7 @@ public class Shooter {
                 break;
         }
 
-        if (!loadedSensor.get() && onDeckSensor.get()) {
+        if (loadedSensor.get() && !onDeckSensor.get()) {
             gateSpeed = YOLO;
         }
 
@@ -116,11 +117,12 @@ public class Shooter {
         gatekeeperMotor.set(gateSpeed);
         launchMotor.set(launchSpeed);
         SmartDashboard.putString("Shooter State", currentState.toString());
+        SmartDashboard.putNumber("Launch RPS", encoder.getRate());
     }
 
     //region Compute target RPM
     private double computeLaunchRPS() {
-        return 22.5;
+        return 30.;
     }
 
 //    public double calculateDistance() {

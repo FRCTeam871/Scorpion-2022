@@ -54,22 +54,18 @@ public class Hanger {
         double grabSpeed = grabAxis.getValue();
         double swingSpeed;
 
-        if(pidButton.getValue()) {
+        if (pidButton.getValue()) {
             final double targetAngle = (swingAxis.getValue() + 1) * 22.5;
             swingSpeed = -pitchPID.calculate(Math.abs(gyro.getRoll()), targetAngle);
         } else {
-            swingSpeed = swingAxis.getValue();
-            if(swingSpeed < 0) {
-                swingSpeed *= .2;
-            }
+            swingSpeed = swingAxis.getValue() * .2;
         }
 
-        if ((grabSpeed > 0 && fullExtendLimitSwitch.get()) || (grabSpeed < 0 && !fullRetractLimitSwitch.get())) {
-            leftGrabMotor.set(0);
-            rightGrabMotor.set(0);
+        if ((grabSpeed < 0 && !fullExtendLimitSwitch.get()) || (grabSpeed > 0 && !fullRetractLimitSwitch.get())) {
+            grabSpeed = 0;
         }
 
-        if((swingSpeed > 0 && swingForwardLimitSwitch.get()) || (swingSpeed < 0 && swingBackLimitSwitch.get())) {
+        if ((swingSpeed > 0 && !swingForwardLimitSwitch.get()) || (swingSpeed < 0 && !swingBackLimitSwitch.get())) {
             swingSpeed = 0;
         }
 
