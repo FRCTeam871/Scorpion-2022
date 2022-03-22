@@ -58,8 +58,15 @@ public class Hanger {
             final double targetAngle = (swingAxis.getValue() + 1) * 22.5;
             swingSpeed = -pitchPID.calculate(Math.abs(gyro.getRoll()), targetAngle);
         } else {
-            swingSpeed = swingAxis.getValue() * .2;
+            // NEW STUFF IF BROKEN PROBZBLY THIS IM SORRY
+            if (swingAxis.getValue() > 0) {
+                swingSpeed = swingAxis.getValue() * .3;
+            } else {
+                swingSpeed = swingAxis.getValue() * .2;
+            }
+
         }
+
 
         if ((grabSpeed < 0 && !fullExtendLimitSwitch.get()) || (grabSpeed > 0 && !fullRetractLimitSwitch.get())) {
             grabSpeed = 0;

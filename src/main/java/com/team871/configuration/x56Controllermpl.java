@@ -9,19 +9,19 @@ import com.team871.hid.joystick.XBoxAxes;
 import com.team871.hid.joystick.XBoxButtons;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
-
 import java.util.Arrays;
 
-public class XBoxControlImpl implements IController, Sendable {
+public class x56Controllermpl implements IController, Sendable {
     private static final double DEFAULT_DEADBAND = .15;
 
-    private final GenericJoystick<XBoxButtons, XBoxAxes> driveController;
+    private final GenericJoystick<X56JoystickButtons, X56JoystickAxes> driveController;
     private final GenericJoystick<XBoxButtons, XBoxAxes> climbController;
     private UpdatedHIDAxis updatedHIDAxis;
+
     /**
      * @param drivePort the values of the buttons and axes on the controller
      */
-    public XBoxControlImpl(int drivePort, int climbPort) {
+    public x56Controllermpl(int drivePort, int climbPort) {
         driveController = new GenericJoystick<>(drivePort, Arrays.asList(XBoxButtons.values()), Arrays.asList(XBoxAxes.values()));
         driveController.getButton(XBoxButtons.A).setMode(ButtonTypes.MOMENTARY);
         driveController.getButton(XBoxButtons.B).setMode(ButtonTypes.MOMENTARY);
