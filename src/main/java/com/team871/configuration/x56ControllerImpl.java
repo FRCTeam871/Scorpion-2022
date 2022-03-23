@@ -11,27 +11,27 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import java.util.Arrays;
 
-public class x56Controllermpl implements IController, Sendable {
+public class x56ControllerImpl implements IController, Sendable {
     private static final double DEFAULT_DEADBAND = .15;
 
     private final GenericJoystick<X56JoystickButtons, X56JoystickAxes> driveController;
     private final GenericJoystick<XBoxButtons, XBoxAxes> climbController;
     private UpdatedHIDAxis updatedHIDAxis;
+    private UpdatedHIDAxis updatedHIDAxis2;
 
     /**
      * @param drivePort the values of the buttons and axes on the controller
      */
-    public x56Controllermpl(int drivePort, int climbPort) {
-        driveController = new GenericJoystick<>(drivePort, Arrays.asList(XBoxButtons.values()), Arrays.asList(XBoxAxes.values()));
-        driveController.getButton(XBoxButtons.A).setMode(ButtonTypes.MOMENTARY);
-        driveController.getButton(XBoxButtons.B).setMode(ButtonTypes.MOMENTARY);
-        driveController.getButton(XBoxButtons.X).setMode(ButtonTypes.MOMENTARY);
-        driveController.getButton(XBoxButtons.Y).setMode(ButtonTypes.MOMENTARY);
-        driveController.getButton(XBoxButtons.LBUMPER).setMode(ButtonTypes.RISING);
-        driveController.getButton(XBoxButtons.RBUMPER).setMode(ButtonTypes.MOMENTARY);
-        driveController.getAxis(XBoxAxes.LEFTX).setDeadband(DEFAULT_DEADBAND);
-        driveController.getAxis(XBoxAxes.LEFTY).setDeadband(DEFAULT_DEADBAND);
-        driveController.getAxis(XBoxAxes.RIGHTX).setDeadband(DEFAULT_DEADBAND);
+    public x56ControllerImpl(int drivePort, int climbPort) {
+        driveController = new GenericJoystick<>(drivePort, Arrays.asList(X56JoystickButtons.values()), Arrays.asList(X56JoystickAxes.values()));
+        driveController.getButton(X56JoystickButtons.TRIGGER).setMode(ButtonTypes.MOMENTARY);
+        driveController.getButton(X56JoystickButtons.PINKIE_TRIGGER).setMode(ButtonTypes.MOMENTARY);
+        driveController.getButton(X56JoystickButtons.D).setMode(ButtonTypes.MOMENTARY);
+        driveController.getButton(X56JoystickButtons.TRIGGER).setMode(ButtonTypes.MOMENTARY);
+
+        driveController.getAxis(X56JoystickAxes.X_AXIS).setDeadband(DEFAULT_DEADBAND);
+        driveController.getAxis(X56JoystickAxes.Y_AXIS).setDeadband(DEFAULT_DEADBAND);
+        driveController.getAxis(X56JoystickAxes.Z_AXIS).setDeadband(DEFAULT_DEADBAND);
 
         climbController = new GenericJoystick<>(climbPort, Arrays.asList(XBoxButtons.values()), Arrays.asList(XBoxAxes.values()));
         climbController.getButton(XBoxButtons.A).setMode(ButtonTypes.MOMENTARY);
@@ -40,64 +40,65 @@ public class x56Controllermpl implements IController, Sendable {
         climbController.getAxis(XBoxAxes.LEFTY).setDeadband(DEFAULT_DEADBAND);
         climbController.getAxis(XBoxAxes.RIGHTX).setDeadband(DEFAULT_DEADBAND);
         climbController.getAxis(XBoxAxes.RIGHTY).setDeadband(DEFAULT_DEADBAND);
-
         updatedHIDAxis = new UpdatedHIDAxis(climbController.getAxis(XBoxAxes.RIGHTX), true);
+        // updatedHIDAxis2 = new UpdatedHIDAxis(driveController.getAxis(X56JoystickAxes.CSTICK_Y_AXIS), true);
+
     }
 
     //region Drive Controller Group
     @Override
     public HIDAxis getDriveX() {
-        return driveController.getAxis(XBoxAxes.LEFTX);
+        return driveController.getAxis(X56JoystickAxes.X_AXIS);
     }
 
     @Override
     public HIDAxis getDriveY() {
-        return driveController.getAxis(XBoxAxes.LEFTY);
+        return driveController.getAxis(X56JoystickAxes.Y_AXIS);
     }
 
     @Override
     public HIDAxis getDriveRotation() {
-        return driveController.getAxis(XBoxAxes.RIGHTX);
+        return driveController.getAxis(X56JoystickAxes.Z_AXIS);
     }
 
     @Override
     public HIDButton getRearRightButton() {
-        return driveController.getButton(XBoxButtons.B);
+        return null;
     }
 
     @Override
     public HIDButton getRearLeftButton() {
-        return driveController.getButton(XBoxButtons.A);
+        return null;
     }
 
     @Override
     public HIDButton getFrontRightButton() {
-        return driveController.getButton(XBoxButtons.Y);
+        return null;
     }
 
     @Override
     public HIDButton getFrontLeftButton() {
-        return driveController.getButton(XBoxButtons.X);
+        return null;
     }
 
     @Override
     public HIDButton getInvertButton() {
-        return driveController.getButton(XBoxButtons.LBUMPER);
+        return null;
     }
 
     @Override
     public HIDButton getFireButton() {
-        return driveController.getButton(XBoxButtons.Y);
+        return driveController.getButton(X56JoystickButtons.PINKIE_TRIGGER);
     }
 
     @Override
     public HIDAxis getCollectorAxis() {
-        return driveController.getAxis(XBoxAxes.RTRIGGER);
+        return driveController.getAxis(X56JoystickAxes.CSTICK_Y_AXIS);//driveController.getButton(X56JoystickButtons.TRIGGER);
     }
 
     @Override
     public HIDButton getRegurgitateButton() {
-        return driveController.getButton(XBoxButtons.X);
+        return driveController.getButton(X56JoystickButtons.D);
     }
     //endregion
 

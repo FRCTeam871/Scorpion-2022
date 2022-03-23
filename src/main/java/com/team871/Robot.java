@@ -5,9 +5,11 @@
 
 package com.team871;
 
+import com.team871.configuration.IController;
 import com.team871.configuration.IRobot;
 import com.team871.configuration.RobotConfig;
 import com.team871.configuration.XBoxControlImpl;
+import com.team871.configuration.x56ControllerImpl;
 import com.team871.subsystem.Collector;
 import com.team871.subsystem.DriveTrain;
 import com.team871.subsystem.Hanger;
@@ -22,13 +24,39 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-    private XBoxControlImpl xbox;
+    private IController xbox;
     private DriveTrain drive;
     private IRobot config;
     private Collector collector;
     private Shooter shooter;
     private Hanger hanger;
-    
+
+    //region autonMode
+    private long currentTime = 0;
+    private Auton currentState;
+    currentState =Auton.START;
+
+    public enum Auton {
+        START,
+        DRIVE,
+        FIRE,
+        POWEROFF,
+    }
+
+    @Override
+    public void autonomousInit() {
+        switch (currentState)
+        case START:
+        currentTime = System.currentTimeMillis();
+
+    }
+
+    @Override
+    public void autonomousPeriodic() {
+
+    }
+    //regionend
+
     /**
      * This method is run when the robot is first started up and should be used for any
      * initialization code.
@@ -36,7 +64,8 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         xbox = new XBoxControlImpl(0, 1);
-        SmartDashboard.putData("ControlImpl", xbox);
+        // xbox = new x56ControllerImpl(0, 1);
+        // SmartDashboard.putData("ControlImpl", xbox);
 
         config = new RobotConfig();
 
@@ -52,6 +81,7 @@ public class Robot extends TimedRobot {
         drive.driveMecanum(xbox.getDriveX(), xbox.getDriveY(), xbox.getDriveRotation(), xbox.getFireButton());
         shooter.update(xbox.getFireButton(), drive.isOnTarget());
         collector.activateCollector(xbox.getCollectorAxis());
+        // collector.activateCollectorButton(xbox.getCollectorAxis());
         collector.invertCollector(xbox.getRegurgitateButton());
         hanger.update(xbox.getClimbSwingAxis(), xbox.getClimbGrabAxis(), xbox.getActivateSwingPIDButton());
     }

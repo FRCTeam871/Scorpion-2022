@@ -92,9 +92,9 @@ public class Shooter {
             case FIRE:
                 gateSpeed = YOLO;
                 if (onDeckSensor.get() || loadedSensor.get()) {
-                    startTime = System.currentTimeMillis();
+//                    startTime = System.currentTimeMillis();
                 }
-                if (!fireButton.getValue() || (System.currentTimeMillis() - startTime >= EXIT_TIME)) {
+                if (!fireButton.getValue() /*|| (System.currentTimeMillis() - startTime >= EXIT_TIME)*/) {
                     currentState = FireState.WAIT;
                 }
                 break;
@@ -119,6 +119,7 @@ public class Shooter {
         SmartDashboard.putString("Shooter State", currentState.toString());
         SmartDashboard.putNumber("Launch RPS", encoder.getRate());
     }
+
 
     //region Compute target RPM
     private double computeLaunchRPS() {

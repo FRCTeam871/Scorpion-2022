@@ -16,8 +16,12 @@ public class Collector {
         collectorMotor.set(collectorAxis.getValue());
     }
 
-    public void invertCollector (HIDButton regurgitateButton) {
-        if(regurgitateButton.getValue()) {
+    public void activateCollectorButton(HIDButton collectorButton) {
+        collectorMotor.set(collectorButton.getValue() ? 1 : 0);
+    }
+
+    public void invertCollector(HIDButton regurgitateButton) {
+        if (regurgitateButton.getValue()) {
             collectorMotor.set(-.75);
         }
     }
