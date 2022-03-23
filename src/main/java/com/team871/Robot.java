@@ -9,13 +9,11 @@ import com.team871.configuration.IController;
 import com.team871.configuration.IRobot;
 import com.team871.configuration.RobotConfig;
 import com.team871.configuration.XBoxControlImpl;
-import com.team871.configuration.x56ControllerImpl;
 import com.team871.subsystem.Collector;
 import com.team871.subsystem.DriveTrain;
 import com.team871.subsystem.Hanger;
 import com.team871.subsystem.Shooter;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the methods corresponding to
@@ -32,11 +30,10 @@ public class Robot extends TimedRobot {
     private Hanger hanger;
 
     //region autonMode
-    private long currentTime = 0;
-    private Auton currentState;
-    currentState =Auton.START;
+    private long autonTimer = 0;
+    private AutonState currentState = AutonState.START;
 
-    public enum Auton {
+    public enum AutonState {
         START,
         DRIVE,
         FIRE,
@@ -45,17 +42,65 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        switch (currentState)
-        case START:
-        currentTime = System.currentTimeMillis();
-
+        currentState = AutonState.START;
     }
 
     @Override
     public void autonomousPeriodic() {
+        int driveSpeed = 0;
+        double xValue = 0;
+        double yValue = 0;
+        double zValue = 0;
+        boolean aimButton = false;
+        boolean fire = false;
 
+        switch (currentState) {
+            case START:
+                autonTimer = System.currentTimeMillis();
+                currentState = AutonState.DRIVE;
+                break;
+
+            case DRIVE:
+                yValue = -0.5;
+                if(System.currentTimeMillis() - autonTimer >= 2000) {
+                    currentState = AutonState.FIRE;
+                    autonTimer = System.currentTimeMillis();
+                }
+                break;
+
+            case FIRE:
+                yValue = 0;
+                fire = true;
+                if(System.currentTimeMillis() - autonTimer >= 2000){
+                    currentState = AutonState.POWEROFF;
+                    // TODO: GO into FIND_BALLY
+                }
+                break;
+
+            /*
+            case FIND_BALLY:
+               // find it
+               break;
+
+               case GET_BALLY:
+               // get it
+               break
+
+            case FIND_TARGETY:
+               // Find it too
+               // then go shooty
+               break;
+
+             */
+
+            case POWEROFF:
+                break;
+        }
+
+        drive.driveMecanum(xValue, yValue, zValue, aimButton);
+        shooter.update(fire, drive.isOnTarget());
     }
-    //regionend
+    //endregion
 
     /**
      * This method is run when the robot is first started up and should be used for any
@@ -74,14 +119,13 @@ public class Robot extends TimedRobot {
         shooter = new Shooter(config, 6);
         hanger = new Hanger(config);
     }
-    
+
     /** This method is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
         drive.driveMecanum(xbox.getDriveX(), xbox.getDriveY(), xbox.getDriveRotation(), xbox.getFireButton());
         shooter.update(xbox.getFireButton(), drive.isOnTarget());
         collector.activateCollector(xbox.getCollectorAxis());
-        // collector.activateCollectorButton(xbox.getCollectorAxis());
         collector.invertCollector(xbox.getRegurgitateButton());
         hanger.update(xbox.getClimbSwingAxis(), xbox.getClimbGrabAxis(), xbox.getActivateSwingPIDButton());
     }

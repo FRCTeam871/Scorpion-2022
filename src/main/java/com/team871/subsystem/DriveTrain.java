@@ -26,12 +26,16 @@ public class DriveTrain {
     }
 
     public void driveMecanum(HIDAxis xValue, HIDAxis yValue, HIDAxis zValue, HIDButton aimButton) {
-        double rotationScale = (Math.abs(.25 * yValue.getValue())) + .75;
-        if (aimButton.getValue()) {
-            mecanum.driveCartesian(yValue.getValue(), -xValue.getValue(), calculateAim());
+        driveMecanum(xValue.getValue(), yValue.getValue(), zValue.getValue(), aimButton.getValue());
+    }
+
+    public void driveMecanum(double xValue, double yValue, double zValue, boolean aimButton){
+        double rotationScale = (Math.abs(.25 * yValue)) + .75;
+        if (aimButton) {
+            mecanum.driveCartesian(yValue, -xValue, calculateAim());
             limeLightTable.getEntry("ledMode").setNumber(0);
         } else {
-            mecanum.driveCartesian(yValue.getValue(), -xValue.getValue(), -zValue.getValue() * rotationScale);
+            mecanum.driveCartesian(yValue, -xValue, -zValue * rotationScale);
             limeLightTable.getEntry("ledMode").setNumber(1);
         }
     }

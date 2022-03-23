@@ -66,13 +66,17 @@ public class Shooter {
     }
 
     public void update(HIDButton fireButton, boolean onTarget) {
+      update(fireButton.getValue(), onTarget);
+    }
+
+    public void update(boolean fireButton, boolean onTarget) {
         double gateSpeed = 0;
         double launchSpeed = 0;
         switch (currentState) {
             case WAIT:
                 gateSpeed = CHILL_BRO;
                 launchSpeed = CHILL_BRO;
-                if (fireButton.getValue() && (onDeckSensor.get() || !loadedSensor.get()) && onTarget) {
+                if (fireButton && (onDeckSensor.get() || !loadedSensor.get()) && onTarget) {
                     currentState = FireState.SPIN_UP;
                     startTime = System.currentTimeMillis();
                     shooterPID.reset();
@@ -82,7 +86,7 @@ public class Shooter {
 
             case SPIN_UP:
                 gateSpeed = CHILL_BRO;
-                if (!fireButton.getValue()) {
+                if (!fireButton) {
                     currentState = FireState.WAIT;
                 } else if (System.currentTimeMillis() - startTime >= SPIN_UP_TIME) {
                     currentState = FireState.FIRE;
@@ -91,10 +95,7 @@ public class Shooter {
 
             case FIRE:
                 gateSpeed = YOLO;
-                if (onDeckSensor.get() || loadedSensor.get()) {
-//                    startTime = System.currentTimeMillis();
-                }
-                if (!fireButton.getValue() /*|| (System.currentTimeMillis() - startTime >= EXIT_TIME)*/) {
+                if (!fireButton) {
                     currentState = FireState.WAIT;
                 }
                 break;
@@ -120,22 +121,9 @@ public class Shooter {
         SmartDashboard.putNumber("Launch RPS", encoder.getRate());
     }
 
-
     //region Compute target RPM
     private double computeLaunchRPS() {
         return 30.;
     }
-
-//    public double calculateDistance() {
-//        double currentDistance;
-//        currentDistance = (targetHeight * cameraHeight) / Math.tan(cameraAngle * targetAngle);
-//        return currentDistance;
-//    }
-//
-//    public double calculateVVector() {
-//        vVector = Math.sqrt((GRAV / 2) * ((calculateDistance() * calculateDistance()) /
-//                ((Math.cos(THETA) * Math.cos(THETA)) * (calculateDistance() * Math.tan(THETA) - HEIGHT))));
-//        return vVector;
-//    }
     //endregion
 }
